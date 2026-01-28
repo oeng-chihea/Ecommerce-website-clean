@@ -1,0 +1,36 @@
+{
+  "name": "luxe-store",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:init": "npx tsx src/lib/initDb.ts",
+    "db:test": "node -e \"require('./src/lib/initDb.ts').testDatabaseConnection()\"",
+    "email:test": "npx tsx src/lib/testEmail.ts"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^10.16.16",
+    "lucide-react": "^0.303.0",
+    "next": "14.0.4",
+    "nodemailer": "^6.9.8",
+    "pg": "^8.11.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/nodemailer": "^6.4.14",
+    "@types/pg": "^8.10.9",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3"
+  }
+}
