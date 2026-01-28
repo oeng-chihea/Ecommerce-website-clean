@@ -225,7 +225,7 @@ export async function sendOrderReceipt(orderData: any) {
     
   } catch (error) {
     console.error('❌ Failed to send order receipt:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
   }
 }
 
@@ -237,6 +237,6 @@ export async function testEmailConnection() {
     return { success: true };
   } catch (error) {
     console.error('❌ Email service configuration error:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
   }
 }
