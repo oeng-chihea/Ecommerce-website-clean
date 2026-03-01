@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { Product } from '@/lib/data';
 import { useStore } from '@/lib/store';
-import { formatPrice, getDiscountPercentage } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -78,19 +78,6 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           whileHover={{ y: -8, scale: 1.02 }}
           className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-gray-100 hover:border-primary-200"
         >
-          {/* Discount Badge */}
-          {product.originalPrice && (
-            <div className="absolute top-3 left-3 z-10">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg backdrop-blur-sm"
-              >
-                -{getDiscountPercentage(product.originalPrice, product.price)}%
-              </motion.div>
-            </div>
-          )}
-
           {/* Favorite Button */}
           <div className="absolute top-3 right-3 z-10">
             <motion.button

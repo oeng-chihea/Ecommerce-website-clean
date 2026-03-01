@@ -1,8 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const NewsletterLine = dynamic(() => import('./NewsletterLine'), { ssr: false });
 
 export default function Newsletter() {
   return (
@@ -10,18 +12,12 @@ export default function Newsletter() {
       {/* Background Effects */}
       <div className="absolute inset-0">
         <motion.div
-          animate={{
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-          }}
+          animate={{ x: [0, 50, 0], y: [0, -30, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
           className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/15 rounded-full blur-3xl"
         />
         <motion.div
-          animate={{
-            x: [0, -50, 0],
-            y: [0, 30, 0],
-          }}
+          animate={{ x: [0, -50, 0], y: [0, 30, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
           className="absolute bottom-0 right-1/4 w-80 h-80 bg-orange-400/10 rounded-full blur-3xl"
         />
@@ -61,15 +57,13 @@ export default function Newsletter() {
             required
             className="flex-1 px-6 py-4 bg-white border border-gray-200 rounded-full text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors shadow-sm"
           />
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             type="submit"
             className="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-full flex items-center justify-center gap-2 hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-500/25"
           >
             Subscribe
             <ArrowRight className="w-5 h-5" />
-          </motion.button>
+          </button>
         </motion.form>
 
         <motion.p
@@ -82,6 +76,9 @@ export default function Newsletter() {
           By subscribing, you agree to our Privacy Policy
         </motion.p>
       </div>
+
+      {/* Animated hand-drawn curve line — client only to avoid hydration mismatch */}
+      <NewsletterLine />
     </section>
   );
 }

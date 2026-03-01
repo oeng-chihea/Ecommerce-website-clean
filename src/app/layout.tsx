@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Work_Sans, Inter } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import NavbarClient from '@/components/NavbarClient';
 
 const workSans = Work_Sans({ 
   subsets: ['latin'],
@@ -29,11 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${workSans.variable} ${inter.variable} font-sans bg-dark-900 text-white antialiased`}>
-        <Navbar />
+        <NavbarClient />
         <main className="min-h-screen">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );
