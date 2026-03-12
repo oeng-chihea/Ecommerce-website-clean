@@ -63,13 +63,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Build base URL so product images render correctly in the email
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    const host = request.headers.get('host') || '';
+    const baseUrl = `${protocol}://${host}`;
+
     // Send email receipt to customer
     const emailResult = await sendOrderReceipt({
       order: { orderId },
       shippingAddress,
       items: cartItems,
       totals,
-    });
+    }, baseUrl);
 
     console.log('📧 Email sending result:', emailResult);
 
