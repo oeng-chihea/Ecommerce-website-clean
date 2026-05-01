@@ -13,6 +13,8 @@ export default function CheckoutPage() {
   const { cart, getCartTotal, clearCart, addOrder, setShippingAddress } = useStore();
   const [step, setStep] = useState<'shipping' | 'payment' | 'success'>('shipping');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null);
+  const [emailNotice, setEmailNotice] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<ShippingAddress>({
     firstName: '',
@@ -109,6 +111,12 @@ export default function CheckoutPage() {
       }
 
       console.log('Order saved successfully:', result);
+      setConfirmedOrderId(result.orderId || orderId);
+      setEmailNotice(
+        result.emailSent
+          ? `Receipt sent to ${formData.email}.`
+          : `Order saved, but the receipt email was not sent. ${result.emailError || 'Check the server email configuration.'}`
+      );
 
       // Add order to local state (for UI display)
       addOrder(order);
@@ -210,13 +218,13 @@ export default function CheckoutPage() {
                 Order Confirmed!
               </h1>
               <p className="text-gray-600 text-lg mb-8">
-                Thank you for your purchase. We&apos;ll send you an email with order details.
+                Thank you for your purchase. {emailNotice || 'We will send you an email with order details.'}
               </p>
               <div className="p-6 bg-gray-50 border border-gray-200 rounded-2xl mb-8">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-gray-600">Order Number</span>
                   <span className="text-primary-600 font-mono font-semibold">
-                    {generateOrderId()}
+                    {confirmedOrderId}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">

@@ -1,6 +1,9 @@
+import { loadEnvConfig } from '@next/env';
 import pool from './db';
 import fs from 'fs';
 import path from 'path';
+
+loadEnvConfig(process.cwd());
 
 export async function initializeDatabase() {
   try {
@@ -26,20 +29,6 @@ export async function initializeDatabase() {
     }
   } catch (error) {
     console.error('❌ Database initialization failed:', error);
-    return { success: false, error };
-  }
-}
-
-export async function testDatabaseConnection() {
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT NOW()');
-    client.release();
-    
-    console.log('✅ Database connection successful:', result.rows[0].now);
-    return { success: true };
-  } catch (error) {
-    console.error('❌ Database connection failed:', error);
     return { success: false, error };
   }
 }

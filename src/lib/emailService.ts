@@ -1,13 +1,44 @@
 import nodemailer from 'nodemailer';
 
-// Email transporter configuration
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+interface EmailConfig {
+  from: string;
+  transporter: nodemailer.Transporter;
+}
+
+function requiredEmailConfig(): EmailConfig {
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
+  const smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === 465;
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s+/g, '');
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPassword = process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
+  const user = gmailUser || smtpUser;
+  const pass = gmailAppPassword || smtpPassword;
+
+  if (!user || !pass) {
+    throw new Error(
+      'Email is not configured. Set GMAIL_USER and GMAIL_APP_PASSWORD, or SMTP_USER and SMTP_PASS.'
+    );
+  }
+
+  const transporter = smtpHost
+    ? nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpSecure,
+        auth: { user, pass },
+      })
+    : nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user, pass },
+      });
+
+  return {
+    from: process.env.EMAIL_FROM || `"WEISON Store" <${user}>`,
+    transporter,
+  };
+}
 
 // Email template for order receipt
 const generateReceiptTemplate = (orderData: any, baseUrl: string) => {
@@ -274,9 +305,10 @@ const generateReceiptTemplate = (orderData: any, baseUrl: string) => {
 export async function sendOrderReceipt(orderData: any, baseUrl: string = '') {
   try {
     const { shippingAddress, order } = orderData;
+    const { from, transporter } = requiredEmailConfig();
 
     const mailOptions = {
-      from: `"WEISON Store" <${process.env.GMAIL_USER}>`,
+      from,
       to: shippingAddress.email,
       subject: `Order Confirmed — ${order.orderId} | WEISON`,
       html: generateReceiptTemplate(orderData, baseUrl),
@@ -292,14 +324,3 @@ export async function sendOrderReceipt(orderData: any, baseUrl: string = '') {
   }
 }
 
-// Test email configuration
-export async function testEmailConnection() {
-  try {
-    await transporter.verify();
-    console.log('✅ Email service is ready to send messages');
-    return { success: true };
-  } catch (error) {
-    console.error('❌ Email service configuration error:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' };
-  }
-}

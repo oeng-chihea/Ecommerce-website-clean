@@ -3,6 +3,8 @@ import { OrderService } from '@/lib/orderService';
 import { sendOrderReceipt } from '@/lib/emailService';
 import { CartItem, ShippingAddress } from '@/lib/data';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -82,6 +84,7 @@ export async function POST(request: NextRequest) {
       success: true,
       orderId: result.orderId,
       emailSent: emailResult.success,
+      emailError: emailResult.success ? undefined : emailResult.error,
       message: emailResult.success 
         ? 'Order saved and receipt sent to your email!' 
         : 'Order saved successfully (email sending failed)'

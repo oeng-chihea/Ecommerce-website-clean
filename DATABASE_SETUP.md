@@ -36,13 +36,7 @@ Run the database initialization script to create tables:
 npm run db:init
 ```
 
-### 4. Test Connection
-Test your database connection:
-```bash
-npm run db:test
-```
-
-### 5. Start Development Server
+### 4. Start Development Server
 ```bash
 npm run dev
 ```

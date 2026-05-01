@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:init": "npx tsx src/lib/initDb.ts",
-    "db:test": "node -e \"require('./src/lib/initDb.ts').testDatabaseConnection()\"",
-    "email:test": "npx tsx src/lib/testEmail.ts"
+    "db:init": "npx tsx src/lib/initDb.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

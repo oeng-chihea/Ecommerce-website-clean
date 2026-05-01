@@ -74,17 +74,9 @@ A modern, full-featured ecommerce website for premium shirts built with Next.js 
    ```bash
    # Initialize the database
    npm run db:init
-   
-   # Test database connection
-   npm run db:test
    ```
 
-5. **Test Email Service**
-   ```bash
-   npm run email:test
-   ```
-
-6. **Start the development server**
+5. **Start the development server**
    ```bash
    npm run dev
    ```
@@ -119,8 +111,6 @@ npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
 npm run db:init      # Initialize database
-npm run db:test      # Test database connection
-npm run email:test   # Test email service
 ```
 
 ## 📱 Key Components
