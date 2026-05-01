@@ -3,7 +3,9 @@ import { OrderService } from '@/lib/orderService';
 import { sendOrderReceipt } from '@/lib/emailService';
 import { CartItem, ShippingAddress } from '@/lib/data';
 
-export const runtime = 'nodejs';
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : 'Unknown error occurred';
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,7 +62,10 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       console.error('Failed to save order:', result.error);
       return NextResponse.json(
-        { error: 'Failed to save order to database' },
+        {
+          error: 'Failed to save order to database',
+          details: result.error,
+        },
         { status: 500 }
       );
     }
@@ -93,7 +98,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Order creation error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        error: 'Internal server error',
+        details: getErrorMessage(error),
+      },
       { status: 500 }
     );
   }

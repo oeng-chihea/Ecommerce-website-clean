@@ -107,7 +107,10 @@ export default function CheckoutPage() {
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(result.error || 'Failed to save order');
+        const message = result.details
+          ? `${result.error}: ${result.details}`
+          : result.error || 'Failed to save order';
+        throw new Error(message);
       }
 
       console.log('Order saved successfully:', result);
@@ -128,8 +131,7 @@ export default function CheckoutPage() {
       console.error('Error processing order:', error);
       setIsProcessing(false);
       
-      // Show error to user (you might want to add error state)
-      alert('Failed to process order. Please try again.');
+      alert(error instanceof Error ? error.message : 'Failed to process order. Please try again.');
     }
   };
 

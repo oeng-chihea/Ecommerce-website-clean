@@ -1,9 +1,6 @@
-import { loadEnvConfig } from '@next/env';
 import pool from './db';
 import fs from 'fs';
 import path from 'path';
-
-loadEnvConfig(process.cwd());
 
 export async function initializeDatabase() {
   try {

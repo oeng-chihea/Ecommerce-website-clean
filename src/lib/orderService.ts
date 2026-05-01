@@ -1,5 +1,5 @@
 import pool from './db';
-import { Order, CartItem, ShippingAddress } from './data';
+import { CartItem, ShippingAddress } from './data';
 
 export interface DatabaseOrder {
   id?: number;
@@ -53,9 +53,10 @@ export class OrderService {
       total: number;
     }
   ): Promise<{ success: boolean; orderId?: string; error?: string }> {
-    const client = await pool.connect();
+    let client;
     
     try {
+      client = await pool.connect();
       await client.query('BEGIN');
 
       // Insert order
@@ -106,14 +107,18 @@ export class OrderService {
       
       return { success: true, orderId };
     } catch (error) {
-      await client.query('ROLLBACK');
+      if (client) {
+        await client.query('ROLLBACK').catch((rollbackError) => {
+          console.error('Error rolling back order transaction:', rollbackError);
+        });
+      }
       console.error('Error saving order:', error);
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
       };
     } finally {
-      client.release();
+      client?.release();
     }
   }
 
@@ -125,9 +130,10 @@ export class OrderService {
     items?: DatabaseOrderItem[];
     error?: string;
   }> {
-    const client = await pool.connect();
+    let client;
     
     try {
+      client = await pool.connect();
       // Get order details
       const orderResult = await client.query(
         'SELECT * FROM orders WHERE order_id = $1',
@@ -163,7 +169,7 @@ export class OrderService {
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
       };
     } finally {
-      client.release();
+      client?.release();
     }
   }
 
@@ -177,9 +183,10 @@ export class OrderService {
     total?: number;
     error?: string;
   }> {
-    const client = await pool.connect();
+    let client;
     
     try {
+      client = await pool.connect();
       const offset = (page - 1) * limit;
 
       // Get total count
@@ -204,7 +211,7 @@ export class OrderService {
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
       };
     } finally {
-      client.release();
+      client?.release();
     }
   }
 
@@ -213,9 +220,10 @@ export class OrderService {
     orderId: string, 
     status: string
   ): Promise<{ success: boolean; error?: string }> {
-    const client = await pool.connect();
+    let client;
     
     try {
+      client = await pool.connect();
       const result = await client.query(
         'UPDATE orders SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE order_id = $2',
         [status, orderId]
@@ -233,7 +241,7 @@ export class OrderService {
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
       };
     } finally {
-      client.release();
+      client?.release();
     }
   }
 }
